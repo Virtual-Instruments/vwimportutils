@@ -1,0 +1,5 @@
+include CHANGES.md
+include LICENSE
+include README.md
+include README.pdf
+include sample_inputs.zip
