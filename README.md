@@ -8,6 +8,6 @@ that:
 
 Run the following command to install the scripts into your Python 3 virtual environment:
 
-    pip install https://github.com/Virtual-Instruments/vwimportutils/archive/v1.0.zip
+    pip install https://github.com/Virtual-Instruments/vwimportutils/archive/v1.0.1.zip
 
 Refer to the [documentation](docs/vwimporttools.md) for more information.

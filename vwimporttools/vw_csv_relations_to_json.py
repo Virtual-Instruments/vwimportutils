@@ -3,8 +3,8 @@
 __author__ = 'nick.york, david.dougherty'
 __license__ = 'https://www.apache.org/licenses/LICENSE-2.0'
 __copyright__ = 'Copyright (c) 2019 Virtual Instruments Corporation. All rights reserved.'
-__date__ = '2019-06-30'
-__version__ = '1.0'
+__date__ = '2019-12-18'
+__version__ = '1.0.1'
 """
 
 import click
@@ -13,9 +13,10 @@ import os
 
 
 class Entity:
-    def __init__(self, name, etype, child_entities):
+    def __init__(self, name, etype, tags, child_entities):
         self.name = name
         self.type = etype
+        self.tags = tags
         self.child_entities = {"add": child_entities}
 
     def __lt__(self, other):
@@ -26,9 +27,10 @@ class Entity:
 
 
 class ApplicationEntity:
-    def __init__(self, name, etype, initiator_list):
+    def __init__(self, name, etype, tags, initiator_list):
         self.name = name
         self.type = etype
+        self.tags = tags
         self.itl_patterns = []
         self.devices = {'add' : []}
 
@@ -72,12 +74,20 @@ def main(csv_in, json_out):
 
     Input is a CSV file formatted as follows:
 
+    Type,Name,Tags,Item1,Item2,...,ItemN
+
+    Type is one of: application, hba, host, storagearray, storagecontroller, iomodule.
+
+    Tags is a semicolon-separated list of words.
+
+    Example
+
     \b
-    hba,hba1,hba1port1,hba1port2
-    hba,hba2,hba2port1,hba2port2
-    host,host1,hba1
-    host,host2,hba2
-    application,app1,host1,host2
+    hba,hba1,tag1;tag2;tag3,hba1port1,hba1port2
+    hba,hba2,,hba2port1,hba2port2
+    host,host1,tag4;tag5,hba1
+    host,host2,,hba2
+    application,app1,tag6;tag7,host1,host2
 
     Output is a JSON file that can be imported into VirtualWisdom, either via
     the UI or via the command line using the vw_import_entities script.
@@ -89,7 +99,7 @@ def main(csv_in, json_out):
 
     (venv) $ vw_csv_relations_to_json relations.csv import.json
 
-    (venv) $ cat relations.csv | vw_csv_relations_to_json - - | vw_import_entities ...
+    (venv) $ cat relations.csv | vw_csv_relations_to_json - - | vw_import_entities ... -
     """
     if os.name == 'nt':
         success = 'success'
@@ -106,13 +116,18 @@ def main(csv_in, json_out):
             continue
         etype = line.split(',')[0].strip().replace("'", '').replace('"', '')
         name = line.split(',')[1].strip().replace("'", '').replace('"', '')
+        tag_line = line.replace("'", '').replace('"', '').split(',')[2].split(';')
+        if tag_line[0] == '':
+            tags = []
+        else:
+            tags = tag_line
         members = []
-        for member in line.replace("'", '').replace('"', '').split(',')[2:]:
+        for member in line.replace("'", '').replace('"', '').split(',')[3:]:
             members.append(member.strip())
         if etype.lower() == 'application':
-            top.entities.append(ApplicationEntity(name, etype, members))
+            top.entities.append(ApplicationEntity(name, etype, tags, members))
         else:
-            top.entities.append(Entity(name, etype, members))
+            top.entities.append(Entity(name, etype, tags, members))
 
     json_out.write(top.to_JSON())
     json_out.write('\n')

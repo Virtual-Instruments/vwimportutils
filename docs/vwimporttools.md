@@ -35,18 +35,20 @@ entity definitions.
 
 #### Input Format
 
-Type,Name,Item1,Item2,...,ItemN
+Type,Name,Tags,Item1,Item2,...,ItemN
 
-Type is one of: application, hba, host, storagearray, storagecontroller, iomodule
+Type is one of: application, hba, host, storagearray, storagecontroller, iomodule.
+
+Tags is a semicolon-separated list of words.
 
 Example:
 
 ```
-hba,hba1,hba1port1,hba1port2
-hba,hba2,hba2port1,hba2port2
-host,host1,hba1
-host,host2,hba2
-application,app1,host1,host2
+hba,hba1,tag1;tag2,hba1port1,hba1port2
+hba,hba2,,hba2port1,hba2port2
+host,host1,tag3;tag4,hba1
+host,host2,,hba2
+application,app1,tag5,host1,host2
 ```
 
 vw_import_entities imports JSON into VirtualWisdom.
@@ -126,11 +128,20 @@ Usage: vw_csv_relations_to_json [OPTIONS] CSV_IN JSON_OUT
 
   Input is a CSV file formatted as follows:
 
-  hba,hba1,hba1port1,hba1port2
-  hba,hba2,hba2port1,hba2port2
-  host,host1,hba1
-  host,host2,hba2
-  application,app1,host1,host2
+  Type,Name,Tags,Item1,Item2,...,ItemN
+
+  Type is one of: application, hba, host, storagearray, storagecontroller,
+  iomodule.
+
+  Tags is a semicolon-separated list of words.
+
+  Example
+
+  hba,hba1,tag1;tag2;tag3,hba1port1,hba1port2
+  hba,hba2,,hba2port1,hba2port2
+  host,host1,tag4;tag5,hba1
+  host,host2,,hba2
+  application,app1,tag6;tag7,host1,host2
 
   Output is a JSON file that can be imported into VirtualWisdom, either via
   the UI or via the command line using the vw_import_entities script.
@@ -143,7 +154,7 @@ Usage: vw_csv_relations_to_json [OPTIONS] CSV_IN JSON_OUT
   (venv) $ vw_csv_relations_to_json relations.csv import.json
 
   (venv) $ cat relations.csv | vw_csv_relations_to_json - - |
-  vw_import_entities ...
+  vw_import_entities ... -
 
 Options:
   --help  Show this message and exit.

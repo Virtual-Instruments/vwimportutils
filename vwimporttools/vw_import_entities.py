@@ -3,8 +3,8 @@
 __author__ = 'nick.york, david.dougherty'
 __license__ = 'https://www.apache.org/licenses/LICENSE-2.0'
 __copyright__ = 'Copyright (c) 2019 Virtual Instruments Corporation. All rights reserved.'
-__date__ = '2019-06-30'
-__version__ = '1.0'
+__date__ = '2019-12-18'
+__version__ = '1.0.1'
 """
 
 import click
@@ -141,7 +141,13 @@ def main(host, token, force, json_in):
 
     click.echo('Performing final verification... ', nl=False)
     parameters = { 'transactionId' : transactionId }
-    rc, res = vw.get('/api/v1/entitiesimport/status', parameters=parameters)
+    while True:
+        rc, res = vw.get('/api/v1/entitiesimport/status', parameters=parameters)
+        if rc and 'success' in res and res['success'] == False and 'status' in res and res['status'] == 'Busy':
+            time.sleep(1)
+            continue
+        else:
+            break
     if rc and 'success' in res and res['success'] == True:
         click.echo(click.style(success, fg='green'))
     else:
