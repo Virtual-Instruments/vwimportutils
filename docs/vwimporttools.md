@@ -81,7 +81,7 @@ $ venv/bin/activate           c:\<dir> venv\Scripts\activate
 2. Install the package.
 
 ```
-(venv) $ pip install https://github.com/Virtual-Instruments/vwimportutils/archive/v1.0.1.zip
+(venv) $ pip install https://github.com/Virtual-Instruments/vwimportutils/archive/v1.0.1-1.zip
 ```
 
 3. Validate that the package installed correctly.
