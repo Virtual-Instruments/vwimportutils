@@ -2,9 +2,9 @@
 """
 __author__ = 'nick.york, david.dougherty'
 __license__ = 'https://www.apache.org/licenses/LICENSE-2.0'
-__copyright__ = 'Copyright (c) 2019 Virtual Instruments Corporation. All rights reserved.'
-__date__ = '2019-06-30'
-__version__ = '1.0'
+__copyright__ = 'Copyright (c) 2021 Virtual Instruments Corporation (d/b/a Virtana). All rights reserved.'
+__date__ = '2021-11-15'
+__version__ = '1.1'
 """
 
 import click
@@ -13,10 +13,10 @@ import os
 
 
 class Entity:
-    def __init__(self, name, wwn):
-        self.name = name
+    def __init__(self, name, wwn, etype):
+        self.new_name = name
         self.wwn = wwn
-        self.type = "fcport"
+        self.type = etype
 
     def __lt__(self, other):
         return self.name < other.name
@@ -35,9 +35,10 @@ class Top:
 
 
 @click.command('vw_csv_nicknames_to_json', short_help='Convert CSV nicknames to importable JSON')
+@click.option('--etype', '-t', prompt='Entity type (either hostport or storageport)')
 @click.argument('csv_in', type=click.File('r'))
 @click.argument('json_out', type=click.File('w'))
-def main(csv_in, json_out):
+def main(etype, csv_in, json_out):
     """
     This script generates an importable JSON file from a CSV file containing
     WWN to nickname (alias) mappings.
@@ -51,14 +52,16 @@ def main(csv_in, json_out):
     Output is a JSON file that can be imported into VirtualWisdom, either via
     the UI or via the command line using the vw_import_entities script.
 
+    The --etype (-t) argument must be either hostport or storageport.
+
     The command is pipeable; simply replace either the input file, output file,
     or both with a dash (-).
 
     Examples (Linux/macOS/Unix):
 
-    (venv) $ vw_csv_nicknames_to_json aliases.csv import.json
+    (venv) $ vw_csv_nicknames_to_json -t hostport aliases.csv import.json
 
-    (venv) $ cat aliases.csv | vw_csv_nicknames_to_json - - | vw_import_entities ...
+    (venv) $ cat aliases.csv | vw_csv_nicknames_to_json -t hostport - - | vw_import_entities ...
     """
     if os.name == 'nt':
         success = 'success'
@@ -74,7 +77,7 @@ def main(csv_in, json_out):
         if not ',' in line:
             continue
         top.entities.append(Entity(line.split(',')[1].strip().replace("'", '').replace('"', ''),
-            line.split(',')[0].strip()))
+            line.split(',')[0].strip(), etype))
 
     json_out.write(top.to_JSON())
     json_out.write('\n')

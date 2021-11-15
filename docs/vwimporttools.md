@@ -30,7 +30,7 @@ Example:
 5001438002b0dbb4,hba1port2
 ```
 
-vw_csv_relations_to_json generated importable JSON from a CSV file containing
+vw_csv_relations_to_json generats importable JSON from a CSV file containing
 entity definitions.
 
 #### Input Format
@@ -61,7 +61,7 @@ These scripts are provided "as is" and are not supported by VirtualInstruments.
 
 ### Installation
 
-These scripts require Python 3.5+ (64-bit), two Python packages, 'click' and 'requests',
+These scripts require Python 3.7+ (64-bit), two Python packages, 'click' and 'requests',
 and a version of OpenSSL that supports TLSv1.2. The easiest and recommended method for
 setting up to run the scripts is as follows.
 
@@ -92,7 +92,7 @@ $ venv/bin/activate           c:\<dir> venv\Scripts\activate
 
 ### vw_csv_nicknames_to_json
 ```
-Usage: vw_csv_nicknames_to_json [OPTIONS] CSV_IN JSON_OUT
+Usage: vw_csv_nicknames_to_json.py [OPTIONS] CSV_IN JSON_OUT
 
   This script generates an importable JSON file from a CSV file containing
   WWN to nickname (alias) mappings.
@@ -105,18 +105,21 @@ Usage: vw_csv_nicknames_to_json [OPTIONS] CSV_IN JSON_OUT
   Output is a JSON file that can be imported into VirtualWisdom, either via
   the UI or via the command line using the vw_import_entities script.
 
+  The --etype (-t) argument must be either hostport or storageport.
+
   The command is pipeable; simply replace either the input file, output
   file, or both with a dash (-).
 
   Examples (Linux/macOS/Unix):
 
-  (venv) $ vw_csv_nicknames_to_json aliases.csv import.json
+  (venv) $ vw_csv_nicknames_to_json -t hostport aliases.csv import.json
 
-  (venv) $ cat aliases.csv | vw_csv_nicknames_to_json - - |
+  (venv) $ cat aliases.csv | vw_csv_nicknames_to_json -t hostport - - |
   vw_import_entities ...
 
 Options:
-  --help  Show this message and exit.
+  -t, --etype TEXT
+  --help            Show this message and exit.
 ```
 
 ### vw_csv_relations_to_json
