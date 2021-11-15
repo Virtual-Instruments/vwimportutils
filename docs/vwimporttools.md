@@ -30,7 +30,7 @@ Example:
 5001438002b0dbb4,hba1port2
 ```
 
-vw_csv_relations_to_json generats importable JSON from a CSV file containing
+vw_csv_relations_to_json generates importable JSON from a CSV file containing
 entity definitions.
 
 #### Input Format
@@ -92,7 +92,7 @@ $ venv/bin/activate           c:\<dir> venv\Scripts\activate
 
 ### vw_csv_nicknames_to_json
 ```
-Usage: vw_csv_nicknames_to_json.py [OPTIONS] CSV_IN JSON_OUT
+Usage: vw_csv_nicknames_to_json [OPTIONS] CSV_IN JSON_OUT
 
   This script generates an importable JSON file from a CSV file containing
   WWN to nickname (alias) mappings.
